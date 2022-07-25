@@ -7,7 +7,7 @@ public class BaseTest {
 
     @BeforeSuite
     public void setup() {
-        JsonServer.startJsonServer();
+//        JsonServer.startJsonServer();
         RestAssured.baseURI = "http://localhost:3000/";
     }
 }
