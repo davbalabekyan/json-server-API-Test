@@ -1,4 +1,4 @@
-package business;
+package utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
@@ -8,13 +8,15 @@ import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
-import model.User;
+import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONObject;
+import pojo.User;
 
 import java.io.FileInputStream;
 import java.util.Map;
 import java.util.Properties;
 
+@Slf4j
 @UtilityClass
 public class RequestUtils {
 
@@ -25,6 +27,7 @@ public class RequestUtils {
     }
 
     public void getHomePage() {
+        log.info("Get Home Page");
         response = RestAssured
                 .when()
                 .get()
@@ -53,7 +56,6 @@ public class RequestUtils {
                 .then();
     }
 
-    //
     @SneakyThrows
     public void createNewUser(User body) {
         ObjectMapper mapper = new ObjectMapper();
@@ -69,6 +71,7 @@ public class RequestUtils {
     @SneakyThrows
     public void updateUserById(int id, User body) {
         ObjectMapper mapper = new ObjectMapper();
+
         response = RestAssured
                 .given()
                 .spec(getRequestSpecification())
@@ -78,7 +81,7 @@ public class RequestUtils {
                 .then();
     }
 
-    public void updateUserByIdPatch(int id, Map<String, String> user) {
+    public void updateUserByIdPatch(int id, Map<String, Object> user) {
         JSONObject jsonObject = new JSONObject(user);
         response = RestAssured
                 .given()

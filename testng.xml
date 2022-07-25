@@ -3,7 +3,8 @@
 <suite name="Test Suite">
     <test name="json-server Api Test">
         <classes>
-            <class name="UserAPITests"/>
+            <class name="tests.UserAPITests"/>
+            <class name="tests.SubjectAPITests"/>
         </classes>
     </test>
 </suite>

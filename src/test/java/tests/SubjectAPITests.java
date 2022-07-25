@@ -1,10 +1,12 @@
-import business.RequestUtils;
-import business.ResponseUtils;
+package tests;
+
 import core.BaseTest;
-import model.Subject;
 import org.apache.http.HttpStatus;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import pojo.Subject;
+import utils.RequestUtils;
+import utils.ResponseUtils;
 
 public class SubjectAPITests extends BaseTest {
 

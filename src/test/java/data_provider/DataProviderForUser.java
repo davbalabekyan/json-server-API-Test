@@ -6,10 +6,17 @@ import org.testng.annotations.DataProvider;
 
 public class DataProviderForUser {
 
-    @DataProvider(name = "dataProviderForPostAndPut")
-    public Object[][] dataForPostAndPut() {
+    @DataProvider(name = "dataProviderForPost")
+    public static Object[][] dataForPost() {
         return new Object[][]{
-                {"firstName", "lastName", "email@dsd.com", Gender.MALE.name().toLowerCase(), Status.ACTIVE.name().toLowerCase(), 1},
+                {"Petros", "Petrosyan", "petrosyan@mail.ru", Gender.MALE.name().toLowerCase(), Status.INACTIVE.name().toLowerCase(), 2}
+        };
+    }
+
+    @DataProvider(name = "dataProviderForPut")
+    public static Object[][] dataForPut() {
+        return new Object[][]{
+                {"New", "User", "newueser@mail.ru", Gender.FEMALE.name().toLowerCase(), Status.INACTIVE.name().toLowerCase(), 2}
         };
     }
 }
