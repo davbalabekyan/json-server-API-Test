@@ -45,7 +45,7 @@ public class UserAPITests extends BaseTest {
         Assert.assertEquals(ResponseUtils.getResponse().extract().statusCode(), HttpStatus.SC_OK);
     }
 
-    @Test(dataProviderClass = DataProviderForUser.class, dataProvider = "dataProviderForPost", priority = -1)
+    @Test(dataProviderClass = DataProviderForUser.class, dataProvider = "userProvider", priority = -1)
     @Description("Create new user")
     public void createNewUser(String firstName, String lastName, String email, String gender, String status, int subjectId) {
         RequestUtils.createNewUser(new User(firstName, lastName, email, gender, status, subjectId));
@@ -53,7 +53,7 @@ public class UserAPITests extends BaseTest {
         Assert.assertEquals(objectFromPostResponse.getFirstName(), firstName);
     }
 
-    @Test(dataProviderClass = DataProviderForUser.class, dataProvider = "dataProviderForPut")
+    @Test(dataProviderClass = DataProviderForUser.class, dataProvider = "userProvider")
     @Description("Update user by id")
     public void updateUserById(String firstName, String lastName, String email, String gender, String status, int subjectId) {
         RequestUtils.updateUserById(9, new User(firstName, lastName, email, gender, status, subjectId));
