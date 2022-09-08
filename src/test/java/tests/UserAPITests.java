@@ -7,7 +7,9 @@ import utils.ResponseUtils;
 import core.BaseTest;
 import pojo.User;
 import org.apache.http.HttpStatus;
-import org.testng.Assert;
+
+import static org.testng.Assert.*;
+
 import org.testng.annotations.Test;
 
 import java.util.LinkedHashMap;
@@ -19,7 +21,7 @@ public class UserAPITests extends BaseTest {
     @Description("Get home page")
     public void getHomePage() {
         RequestUtils.getHomePage();
-        Assert.assertEquals(ResponseUtils.getResponse().extract().statusCode(), HttpStatus.SC_OK);
+        assertEquals(ResponseUtils.getResponse().extract().statusCode(), HttpStatus.SC_OK);
     }
 
     @Test(priority = 3)
@@ -27,7 +29,8 @@ public class UserAPITests extends BaseTest {
     public void getAllUsers() {
         RequestUtils.getAllUsers();
         ResponseUtils.validateResponseAgainstJsonSchema("src/test/resources/schema/getRequestSchema.json");
-        Assert.assertEquals(ResponseUtils.getResponse().extract().statusCode(), HttpStatus.SC_OK);
+        ResponseUtils.getResponse().extract().response().prettyPrint();
+        assertEquals(ResponseUtils.getResponse().extract().statusCode(), HttpStatus.SC_OK);
     }
 
     @Test(priority = 3)
@@ -35,14 +38,14 @@ public class UserAPITests extends BaseTest {
     public void getUserById() {
         RequestUtils.getUserById(4);
         User user = ResponseUtils.getObjectFromGetPutAndDeleteResponse(User.class, "");
-        Assert.assertEquals(user.getId(), 4);
+        assertEquals(user.getId(), 4);
     }
 
     @Test(priority = 3)
     @Description("Get users by subject id")
     public void getUsersBySubjectId() {
         RequestUtils.getUsersBySubjectId(2);
-        Assert.assertEquals(ResponseUtils.getResponse().extract().statusCode(), HttpStatus.SC_OK);
+        assertEquals(ResponseUtils.getResponse().extract().statusCode(), HttpStatus.SC_OK);
     }
 
     @Test(dataProviderClass = DataProviderForUser.class, dataProvider = "userProvider", priority = -1)
@@ -50,14 +53,14 @@ public class UserAPITests extends BaseTest {
     public void createNewUser(String firstName, String lastName, String email, String gender, String status, int subjectId) {
         RequestUtils.createNewUser(new User(firstName, lastName, email, gender, status, subjectId));
         User objectFromPostResponse = ResponseUtils.getObjectFromPostResponse(User.class, "");
-        Assert.assertEquals(objectFromPostResponse.getFirstName(), firstName);
+        assertEquals(objectFromPostResponse.getFirstName(), firstName);
     }
 
     @Test(dataProviderClass = DataProviderForUser.class, dataProvider = "userProvider")
     @Description("Update user by id")
     public void updateUserById(String firstName, String lastName, String email, String gender, String status, int subjectId) {
         RequestUtils.updateUserById(9, new User(firstName, lastName, email, gender, status, subjectId));
-        Assert.assertEquals(ResponseUtils.getResponse().extract().statusCode(), HttpStatus.SC_OK);
+        assertEquals(ResponseUtils.getResponse().extract().statusCode(), HttpStatus.SC_OK);
     }
 
     @Test(priority = 1)
@@ -68,13 +71,13 @@ public class UserAPITests extends BaseTest {
         mapOfUserFields.put("lastName", "surname");
         RequestUtils.updateUserByIdPatch(9, mapOfUserFields);
         User objectFromResponse = ResponseUtils.getObjectFromGetPutAndDeleteResponse(User.class, "");
-        Assert.assertEquals(objectFromResponse.getFirstName(), "name");
+        assertEquals(objectFromResponse.getFirstName(), "name");
     }
 
     @Test(priority = 2)
     @Description("Delete user by id")
     public void deleteUserById() {
         RequestUtils.deleteUserById(9);
-        Assert.assertEquals(ResponseUtils.getResponse().extract().statusCode(), HttpStatus.SC_OK);
+        assertEquals(ResponseUtils.getResponse().extract().statusCode(), HttpStatus.SC_OK);
     }
 }
