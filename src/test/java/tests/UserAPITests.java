@@ -1,19 +1,19 @@
 package tests;
 
+import core.BaseTest;
 import data_provider.DataProviderForUser;
 import io.qameta.allure.Description;
+import org.apache.http.HttpStatus;
+import org.testng.annotations.Test;
+import pojo.User;
 import utils.RequestUtils;
 import utils.ResponseUtils;
-import core.BaseTest;
-import pojo.User;
-import org.apache.http.HttpStatus;
-
-import static org.testng.Assert.*;
-
-import org.testng.annotations.Test;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import static org.testng.Assert.assertEquals;
+import static utils.JsonSchemaValidators.validateResponseAgainstJsonSchema;
 
 public class UserAPITests extends BaseTest {
 
@@ -28,7 +28,7 @@ public class UserAPITests extends BaseTest {
     @Description("Get all users")
     public void getAllUsers() {
         RequestUtils.getAllUsers();
-        ResponseUtils.validateResponseAgainstJsonSchema("src/test/resources/schema/getRequestSchema.json");
+        validateResponseAgainstJsonSchema("src/test/resources/schema/getRequestSchema.json");
         ResponseUtils.getResponse().extract().response().prettyPrint();
         assertEquals(ResponseUtils.getResponse().extract().statusCode(), HttpStatus.SC_OK);
     }

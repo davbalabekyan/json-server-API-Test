@@ -1,20 +1,18 @@
 package utils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
-import io.restassured.builder.RequestSpecBuilder;
-import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
-import io.restassured.specification.RequestSpecification;
-import lombok.SneakyThrows;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pojo.User;
 
-import java.io.FileInputStream;
 import java.util.Map;
-import java.util.Properties;
+
+import static utils.PropertiesReader.getValueFromPropertyFile;
+import static utils.Specifications.getRequestSpecification;
 
 public final class RequestUtils {
 
@@ -58,29 +56,35 @@ public final class RequestUtils {
                 .then();
     }
 
-    @SneakyThrows
     public static void createNewUser(User body) {
         ObjectMapper mapper = new ObjectMapper();
-        response = RestAssured
-                .given()
-                .spec(getRequestSpecification())
-                .body(mapper.writeValueAsString(body))
-                .when()
-                .post(getValueFromPropertyFile("users"))
-                .then();
+        try {
+            response = RestAssured
+                    .given()
+                    .spec(getRequestSpecification())
+                    .body(mapper.writeValueAsString(body))
+                    .when()
+                    .post(getValueFromPropertyFile("users"))
+                    .then();
+        } catch (JsonProcessingException e) {
+            log.error("Error occurred while sending body");
+        }
     }
 
-    @SneakyThrows
     public static void updateUserById(int id, User body) {
         ObjectMapper mapper = new ObjectMapper();
 
-        response = RestAssured
-                .given()
-                .spec(getRequestSpecification())
-                .body(mapper.writeValueAsString(body))
-                .when()
-                .put(getValueFromPropertyFile("users") + id)
-                .then();
+        try {
+            response = RestAssured
+                    .given()
+                    .spec(getRequestSpecification())
+                    .body(mapper.writeValueAsString(body))
+                    .when()
+                    .put(getValueFromPropertyFile("users") + id)
+                    .then();
+        } catch (JsonProcessingException e) {
+            log.error("Error occurred while sending body");
+        }
     }
 
     public static void updateUserByIdPatch(int id, Map<String, Object> user) {
@@ -113,21 +117,5 @@ public final class RequestUtils {
                 .when()
                 .get(getValueFromPropertyFile("subjects") + subjectId)
                 .then();
-    }
-
-    private static RequestSpecification getRequestSpecification() {
-        RequestSpecBuilder specBuilder = new RequestSpecBuilder();
-        return specBuilder
-                .setContentType(ContentType.JSON)
-                .setAccept(ContentType.JSON)
-                .build();
-    }
-
-    @SneakyThrows
-    private static String getValueFromPropertyFile(String key) {
-        Properties properties = new Properties();
-        FileInputStream fileInputStream = new FileInputStream("src/main/resources/endpoints.properties");
-        properties.load(fileInputStream);
-        return properties.getProperty(key);
     }
 }

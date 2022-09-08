@@ -1,11 +1,19 @@
 package core;
 
-import lombok.SneakyThrows;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 
 public class JsonServer {
 
-    @SneakyThrows
+    private static Logger log = LoggerFactory.getLogger(JsonServer.class);
+
     public static void startJsonServer() {
-        Runtime.getRuntime().exec("json-server --watch db.json");
+        try {
+            Runtime.getRuntime().exec("json-server --watch db.json");
+        } catch (IOException e) {
+            log.error("Error occurred while executing task");
+        }
     }
 }
