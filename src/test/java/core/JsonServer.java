@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public class JsonServer {
 
-    private static Logger log = LoggerFactory.getLogger(JsonServer.class);
+    private static final Logger log = LoggerFactory.getLogger(JsonServer.class);
 
     public static void startJsonServer() {
         try {
