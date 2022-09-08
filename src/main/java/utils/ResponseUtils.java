@@ -8,24 +8,27 @@ import io.restassured.http.ContentType;
 import io.restassured.module.jsv.JsonSchemaValidator;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.ResponseSpecification;
-import lombok.experimental.UtilityClass;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-@Slf4j
-@UtilityClass
-public class ResponseUtils {
+public final class ResponseUtils {
 
-    public ValidatableResponse getResponse() {
+    private static final Logger log = LoggerFactory.getLogger(ResponseUtils.class);
+
+    private ResponseUtils() {
+    }
+
+    public static ValidatableResponse getResponse() {
         return RequestUtils.getResponse();
     }
 
-    public <T> T getObjectFromGetPutAndDeleteResponse(Class<T> type, String path) {
+    public static <T> T getObjectFromGetPutAndDeleteResponse(Class<T> type, String path) {
         return getResponse()
                 .spec(getResponseSpecification())
                 .statusCode(HttpStatus.SC_OK)
@@ -34,7 +37,7 @@ public class ResponseUtils {
                 .getObject(path, type);
     }
 
-    public <T> T getObjectFromPostResponse(Class<T> type, String path) {
+    public static <T> T getObjectFromPostResponse(Class<T> type, String path) {
         return getResponse()
                 .spec(getResponseSpecification())
                 .statusCode(HttpStatus.SC_CREATED)
@@ -43,14 +46,14 @@ public class ResponseUtils {
                 .getObject(path, type);
     }
 
-    public <T> List<T> getListOfObjectsFromResponse(Class<T> type, String path) {
+    public static <T> List<T> getListOfObjectsFromResponse(Class<T> type, String path) {
         return getResponse()
                 .extract()
                 .jsonPath()
                 .getList(path, type);
     }
 
-    private ResponseSpecification getResponseSpecification() {
+    private static ResponseSpecification getResponseSpecification() {
         ResponseSpecBuilder specBuilder = new ResponseSpecBuilder();
         return specBuilder
                 .expectResponseTime(Matchers.lessThan(10L), TimeUnit.SECONDS)
@@ -58,7 +61,7 @@ public class ResponseUtils {
                 .build();
     }
 
-    public void validateResponseAgainstJsonSchema(String path) {
+    public static void validateResponseAgainstJsonSchema(String path) {
         JsonSchemaFactory jsonSchemaFactory = JsonSchemaFactory
                 .newBuilder()
                 .setValidationConfiguration(ValidationConfiguration.newBuilder()

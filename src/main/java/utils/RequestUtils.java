@@ -7,26 +7,28 @@ import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import lombok.SneakyThrows;
-import lombok.experimental.UtilityClass;
-import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pojo.User;
 
 import java.io.FileInputStream;
 import java.util.Map;
 import java.util.Properties;
 
-@Slf4j
-@UtilityClass
-public class RequestUtils {
+public final class RequestUtils {
 
-    private ValidatableResponse response;
+    private static final Logger log = LoggerFactory.getLogger(RequestUtils.class);
+    private static ValidatableResponse response;
 
-    public ValidatableResponse getResponse() {
+    private RequestUtils() {
+    }
+
+    public static ValidatableResponse getResponse() {
         return response;
     }
 
-    public void getHomePage() {
+    public static void getHomePage() {
         log.info("Get Home Page");
         response = RestAssured
                 .when()
@@ -34,7 +36,7 @@ public class RequestUtils {
                 .then();
     }
 
-    public void getAllUsers() {
+    public static void getAllUsers() {
         response = RestAssured
                 .when()
                 .get(getValueFromPropertyFile("users"))
@@ -42,14 +44,14 @@ public class RequestUtils {
     }
 
 
-    public void getUserById(int id) {
+    public static void getUserById(int id) {
         response = RestAssured
                 .when()
                 .get(getValueFromPropertyFile("users") + id)
                 .then();
     }
 
-    public void getUsersBySubjectId(int subjectId) {
+    public static void getUsersBySubjectId(int subjectId) {
         response = RestAssured
                 .when()
                 .get(getValueFromPropertyFile("subjects") + subjectId + "/" + getValueFromPropertyFile("users"))
@@ -57,7 +59,7 @@ public class RequestUtils {
     }
 
     @SneakyThrows
-    public void createNewUser(User body) {
+    public static void createNewUser(User body) {
         ObjectMapper mapper = new ObjectMapper();
         response = RestAssured
                 .given()
@@ -69,7 +71,7 @@ public class RequestUtils {
     }
 
     @SneakyThrows
-    public void updateUserById(int id, User body) {
+    public static void updateUserById(int id, User body) {
         ObjectMapper mapper = new ObjectMapper();
 
         response = RestAssured
@@ -81,7 +83,7 @@ public class RequestUtils {
                 .then();
     }
 
-    public void updateUserByIdPatch(int id, Map<String, Object> user) {
+    public static void updateUserByIdPatch(int id, Map<String, Object> user) {
         JSONObject jsonObject = new JSONObject(user);
         response = RestAssured
                 .given()
@@ -92,28 +94,28 @@ public class RequestUtils {
                 .then();
     }
 
-    public void deleteUserById(int id) {
+    public static void deleteUserById(int id) {
         response = RestAssured
                 .when()
                 .delete(getValueFromPropertyFile("users") + id)
                 .then();
     }
 
-    public void getAllSubjects() {
+    public static void getAllSubjects() {
         response = RestAssured
                 .when()
                 .get(getValueFromPropertyFile("subjects"))
                 .then();
     }
 
-    public void getSubjectById(int subjectId) {
+    public static void getSubjectById(int subjectId) {
         response = RestAssured
                 .when()
                 .get(getValueFromPropertyFile("subjects") + subjectId)
                 .then();
     }
 
-    private RequestSpecification getRequestSpecification() {
+    private static RequestSpecification getRequestSpecification() {
         RequestSpecBuilder specBuilder = new RequestSpecBuilder();
         return specBuilder
                 .setContentType(ContentType.JSON)
@@ -122,7 +124,7 @@ public class RequestUtils {
     }
 
     @SneakyThrows
-    private String getValueFromPropertyFile(String key) {
+    private static String getValueFromPropertyFile(String key) {
         Properties properties = new Properties();
         FileInputStream fileInputStream = new FileInputStream("src/main/resources/endpoints.properties");
         properties.load(fileInputStream);
